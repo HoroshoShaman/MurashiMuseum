@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Мураши">
+<meta name="theme-color" content="#1f1c1a">
+<title>Музей мурашей</title>
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-64.png">
+<link rel="preload" href="pangolin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="app.css?v=5">
+</head>
+<body>
+<main id="app">
+
+  <section id="boot" class="screen center">
+    <p class="hand dim">Музей открывается…</p>
+  </section>
+
+  <section id="lock" class="screen center" hidden>
+    <h1 class="hand title">Музей мурашей</h1>
+    <div class="frame" aria-hidden="true"></div>
+    <p class="lead">Музей открывается ключом. Приложи телефон к наклейке в альбоме или введи пароль.</p>
+    <form id="lockForm" class="lockform" autocomplete="off">
+      <input id="pw" name="pw" type="text" inputmode="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="пароль" aria-label="Пароль">
+      <button type="submit" class="btn-yellow">Открыть</button>
+    </form>
+    <p class="hint">Подсказка: отчество на конверте №74.</p>
+    <p class="err" id="lockErr" role="alert"></p>
+  </section>
+
+  <section id="welcome" class="screen" hidden>
+    <h1 class="hand title">Музей мурашей</h1>
+    <p class="w-lead">Чтобы музей жил в телефоне, добавь его на экран «Домой». Это займёт полминуты.</p>
+    <ol class="steps">
+      <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v11M8 7l4-4 4 4"/><path d="M7 10H5.5A1.5 1.5 0 0 0 4 11.5v8A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5H17"/></svg></span>
+        <span>Нажми «Поделиться» — квадрат со стрелкой вверх. В новых iOS он прячется под «⋯».</span></li>
+      <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span>
+        <span>Выбери «На экран „Домой“» и нажми «Добавить».</span></li>
+      <li><span class="ic ic-app" aria-hidden="true"><img src="icon-64.png" alt=""></span>
+        <span>Открывай музей с иконки «Мураши»: так кружки, сохранённые в телефон, не сотрутся.</span></li>
+    </ol>
+    <button type="button" class="btn-yellow" id="welcomeGo">Понятно, в музей</button>
+  </section>
+
+  <section id="home" class="screen" hidden>
+    <header class="head">
+      <h1 class="hand title">Музей мурашей</h1>
+      <p class="sub" id="homeSub"></p>
+    </header>
+
+    <div class="env" id="pad">
+      <div class="env-in">
+        <p class="hand env-label">Номер экспоната</p>
+        <div class="disp" aria-live="polite"><span class="o">○</span><span id="digits" class="hand"></span><span class="caret" aria-hidden="true"></span></div>
+        <p class="env-msg" id="padMsg">Номер с кружочком — из альбома.</p>
+        <div class="keys" id="keys">
+          <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button>
+          <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button>
+          <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button>
+          <button type="button" data-k="del" class="k-del" aria-label="Стереть">⌫</button><button type="button" data-k="0">0</button><button type="button" data-k="go" class="k-go" aria-label="Смотреть"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="links">
+      <button type="button" class="link" id="btnRandom">Случайный кружок</button>
+      <button type="button" class="link" id="btnHall">Все кружки</button>
+    </nav>
+
+    <section id="today" class="today" hidden>
+      <h2 class="hand">В этот день</h2>
+      <div class="strip" id="todayStrip"></div>
+    </section>
+
+    <section class="keep" id="keep">
+      <p id="keepText"></p>
+      <div class="bar" id="keepBar" hidden><i></i></div>
+      <button type="button" class="link" id="btnKeep">Сохранить музей в телефон</button>
+    </section>
+
+    <p class="install" id="install" hidden>Чтобы музей открывался с экрана «Домой», нажми «Поделиться» и выбери «На экран „Домой“».</p>
+
+    <footer class="foot">Уважаемые посетители! Экспонаты можно трогать.</footer>
+  </section>
+
+  <section id="hall" class="screen" hidden>
+    <header class="hallhead">
+      <button type="button" class="back" id="hallBack">‹ Музей</button>
+      <h2 class="hand">Все кружки</h2>
+      <p class="sub" id="hallSub"></p>
+    </header>
+    <div class="tools">
+      <div class="seg" id="seg" role="group" aria-label="Чьи кружки">
+        <button type="button" data-f="all" aria-pressed="true">все</button>
+        <button type="button" data-f="Аля" aria-pressed="false">Аля</button>
+        <button type="button" data-f="Женя" aria-pressed="false">Женя</button>
+      </div>
+      <input id="q" type="search" placeholder="Слово, дата или номер" enterkeyhint="search" aria-label="Поиск">
+    </div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+</main>
+
+<div id="player" class="player" role="dialog" aria-modal="true" aria-label="Кружок" hidden>
+  <div class="pl-top">
+    <button type="button" id="plClose" class="icon" aria-label="Закрыть">✕</button>
+    <button type="button" id="plSubs" class="chip" aria-pressed="false">субтитры</button>
+  </div>
+  <div class="pl-scroll">
+    <div class="stage" id="stage">
+      <div class="circle" id="circle">
+        <img id="plPoster" alt="">
+        <video id="vid" playsinline webkit-playsinline preload="auto" disablepictureinpicture></video>
+        <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="r0" cx="50" cy="50" r="48.8"/>
+          <circle class="r1" id="ring" cx="50" cy="50" r="48.8"/>
+          <circle class="rl" id="ringLoad" cx="50" cy="50" r="48.8"/>
+        </svg>
+        <span class="badge hand" id="plBadge"></span>
+        <span class="time" id="plTime"></span>
+        <button type="button" class="tap" id="plTap" aria-label="Пауза"></button>
+        <span class="state" id="plState" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></span>
+      </div>
+      <p class="subs" id="plSubsText" aria-live="off"></p>
+    </div>
+    <div class="cap">
+      <p class="stamp"><span class="who" id="plWho"></span><span id="plStamp"></span></p>
+      <p class="rub hand" id="plRub"></p>
+      <h3 class="hand" id="plTitle"></h3>
+      <blockquote id="plQuote"></blockquote>
+      <p class="guide" id="plGuide"></p>
+      <p class="where" id="plWhere"></p>
+      <div class="pl-nav">
+        <button type="button" id="plPrev" class="link"></button>
+        <button type="button" id="plNext" class="link"></button>
+      </div>
+      <details id="plTr" class="tr">
+        <summary>Расшифровка</summary>
+        <ol id="plTrList"></ol>
+        <p class="note">Расшифровка автоматическая, в ней бывают ошибки. Нажми на строку — кружок перемотается.</p>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=5" defer></script>
+</body>
+</html>
